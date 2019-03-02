@@ -1,0 +1,13 @@
+import React from 'react';
+import Layout from '../components/Layout'
+import UserAuthFlow from '../components/UserAuthFlow'
+
+const Login = (props) => {
+    return (
+<Layout>
+    <UserAuthFlow buttonText={'Sign In'} displayText={'Until SAML'} />
+</Layout>
+    )
+}
+
+export default Login;
