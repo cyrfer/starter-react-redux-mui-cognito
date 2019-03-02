@@ -1,53 +1,42 @@
 import {ActionTypes as AT} from '../actions';
 
-const userReducer = (state={}, action) => {
-    console.log('userReducer', action);
+const userReducer = (user={}, action) => {
+    console.log('userReducer', JSON.stringify(action));
 
     switch(action.type) {
         case AT.SIGNIN_EMAIL_UPDATE:
-            state.user.email = action.data;
-            break;
+            return {...user, email: action.data};
 
         case AT.SIGNIN_PASSWORD_UPDATE:
-            state.user.password = action.data;
-            break;
+            return {...user, password: action.data};
 
         case AT.SIGNIN_PHONE_UPDATE:
-            state.user.phone = action.data;
-            break;
+            return {...user, phone: action.data};
 
         case AT.SIGNIN_SUBMIT: {
             const {password, ...userOmitPw} = action.data;
-            state = {...state, ...{user: userOmitPw}}
-            break;
+            return userOmitPw;
         }
 
-        case AT.SIGNIN_ERROR: {
-            state.user = {
-                authError: action.data
-            };
-            break;
-        }
+        case AT.SIGNIN_ERROR:
+            return {...user, authError: action.data}
 
-        case AT.SIGNIN_SUCCESS: {
-            state.user = {};
-            break;
-        }
+        case AT.SIGNIN_SUCCESS:
+            return action.data
 
         case AT.SIGNIN_PASSWORD_REQUIRED: {
-            state.user.authAction = action.data;
+            user.authAction = action.data;
             break;
         }
 
         case AT.USER_RESET_PASSWORD_SUBMIT: {
-            state.user.authAction = action.data;
+            user.authAction = action.data;
             break;
         }
 
         default:
-            return state;
+            return user;
     }
-    return state;
 }
 
 const rootReducer = (state={}, action) => {
@@ -65,12 +54,10 @@ const rootReducer = (state={}, action) => {
         case AT.USER_RESET_PASSWORD_SUBMIT:
         case AT.USER_RESET_PASSWORD_SUCCESS:
         case AT.USER_RESET_PASSWORD_ERROR:
-            userReducer(state, action)
-            break;
+            return {...state, user: userReducer(state.user, action)}
         default:
-            // state = state;
+            return state;
     }
-    return state;
 }
 
 export default rootReducer;
