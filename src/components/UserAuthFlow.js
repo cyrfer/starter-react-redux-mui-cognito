@@ -55,7 +55,7 @@ const onSubmitSignin = (dispatch, {Auth}) => (evt) => {
         dispatch(signinSuccess(r))
     }).catch(e => {
         console.error('signIn error:', e)
-        dispatch(signinError({...data, error: e}))
+        dispatch(signinError(e))
     })
 }
 
@@ -105,6 +105,7 @@ const mapStateToProps = (state, otherProps) => {
         valueUsername: state.user.username,
         valuePassword: state.user.password,
         authError: state.user.authError,
+        authAction: state.user.authAction,
         services: state.services,
     }
 }

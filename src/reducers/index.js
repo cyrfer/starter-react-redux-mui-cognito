@@ -4,19 +4,20 @@ const userReducer = (user={}, action) => {
     console.log('userReducer', JSON.stringify(action));
 
     switch(action.type) {
-        case AT.SIGNIN_EMAIL_UPDATE:
-            return {...user, email: action.data};
+        case AT.SIGNIN_USERNAME_UPDATE:
+            return {...user, username: action.data};
 
         case AT.SIGNIN_PASSWORD_UPDATE:
             return {...user, password: action.data};
 
+        case AT.SIGNIN_EMAIL_UPDATE:
+            return {...user, email: action.data};
+
         case AT.SIGNIN_PHONE_UPDATE:
             return {...user, phone: action.data};
 
-        case AT.SIGNIN_SUBMIT: {
-            const {password, ...userOmitPw} = action.data;
-            return userOmitPw;
-        }
+        case AT.SIGNIN_SUBMIT:
+            return {...user, signinSubmitted: true};
 
         case AT.SIGNIN_ERROR:
             return {...user, authError: action.data}
@@ -24,15 +25,11 @@ const userReducer = (user={}, action) => {
         case AT.SIGNIN_SUCCESS:
             return action.data
 
-        case AT.SIGNIN_PASSWORD_REQUIRED: {
-            user.authAction = action.data;
-            break;
-        }
+        case AT.SIGNIN_PASSWORD_REQUIRED:
+            return {...user, authAction: action.data};
 
-        case AT.USER_RESET_PASSWORD_SUBMIT: {
-            user.authAction = action.data;
-            break;
-        }
+        case AT.USER_RESET_PASSWORD_SUBMIT:
+            return {...user, authAction: action.data};
 
         default:
             return user;

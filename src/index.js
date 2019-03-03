@@ -29,7 +29,10 @@ const preloadedState = {
         title: 'POC: Cognito',
         shortTitle: 'POC',
     },
-    user: {},
+    user: {
+        username: '',
+        password: '',
+    },
     services: {
         Auth,
     }

@@ -60,10 +60,10 @@ const SignIn = (props) => {
     <Avatar className={classes.avatar}>
         <LockOutlinedIcon />
     </Avatar>
-    <Typography component="h1" variant="h5">{authError || dialogTitle}</Typography>
+    <Typography component="h1" variant="h5">{authError ? authError.code : dialogTitle}</Typography>
     <form onSubmit={onSubmit} action="#">
-        <FormField inputType={'text'} fieldName={'username'} onChange={onChangeUsername} value={valueUsername} label={'user name'} autoComplete="username" autoFocus={true} error={authError} />
-        <FormField inputType={'password'} fieldName={'password'} onChange={onChangePassword} value={valuePassword} label={'Password'} autoComplete="current-password" error={authError} />
+        <FormField inputType={'text'} fieldName={'username'} onChange={onChangeUsername} value={valueUsername} label={'user name'} autoComplete="username" autoFocus={true} error={!!authError} />
+        <FormField inputType={'password'} fieldName={'password'} onChange={onChangePassword} value={valuePassword} label={'Password'} autoComplete="current-password" error={!!authError} />
         <Button type="submit" onClick={() => {}} fullWidth variant="contained" color="primary" className={classes.submit}>{buttonText}</Button>
     </form>
 </Paper>
