@@ -15,32 +15,27 @@ import {Link, withRouter} from 'react-router-dom'
 
 import {userLogout} from '../actions'
 
-const styles = {
-    root: {
-        flexGrow: 1,
-    },
-    title: {
-        flexGrow: 1,
-        textDecoration: 'none',
-    },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
-    },
-};
 
-const LoginButtons = () => {
+const LoginButtons = withStyles({
+    signup: {
+        marginLeft: 12,
+        marginRight: 0,
+    }
+})(({classes, loginPath='/login', signupPath='/signup'}) => {
+    // <Button size="small" variant="contained" color="secondary" component={Link} to={signupPath}>Sign Up</Button>
     return (
 <Fragment>
     <Hidden xsDown={true}>
-        <Button size="small" variant="contained" color="secondary" component={Link} to={'/login'}>Login</Button>
+        <Button size="small" variant="contained" color="secondary" component={Link} to={loginPath}>Login</Button>
+        <Button className={classes.signup} color="inherit" component={Link} to={signupPath}>Sign Up</Button>
     </Hidden>
     <Hidden smUp={true}>
-        <Button size="small" variant="contained" color="secondary" component={Link} to={'/login'}>Login</Button>
+        <Button size="small" variant="contained" color="secondary" component={Link} to={loginPath}>Login</Button>
+        <Button className={classes.signup} color="inherit" component={Link} to={signupPath}>Sign Up</Button>
     </Hidden>
 </Fragment>
     )
-}
+})
 
 const onClickLogout = (dispatch, {Auth}, history, navigateTo) => () => {
     dispatch(userLogout())
@@ -70,8 +65,17 @@ const hasSession = (user) => {
     return user && user.signInUserSession;
 }
 
-const Header = withRouter((props) => {
-    const {classes, user, title, shortTitle, location} = props;
+const Header = withStyles({
+    pageTitle: {
+        flexGrow: 1,
+        textDecoration: 'none',
+    },
+    menuButton: {
+        marginLeft: -12,
+        marginRight: 20,
+    },
+})(withRouter((props) => {
+    const {classes, user, services, dispatch, title, shortTitle, location} = props;
     return (
 <AppBar position="static">
     <Toolbar>
@@ -79,18 +83,18 @@ const Header = withRouter((props) => {
             <MenuIcon />
         </IconButton>
         <Hidden xsDown={true}>
-            <Typography className={classes.title} variant="h6" color="inherit" component={Link} to={'/'}>{title}</Typography>
+            <Typography className={classes.pageTitle} variant="h6" color="inherit" component={Link} to={'/'}>{title}</Typography>
         </Hidden>
         <Hidden smUp={true}>
-            <Typography className={classes.title} variant="h6" color="inherit" component={Link} to={'/'}>{shortTitle || title}</Typography>
+            <Typography className={classes.pageTitle} variant="h6" color="inherit" component={Link} to={'/'}>{shortTitle || title}</Typography>
         </Hidden>
         {location.pathname === '/login' ? '' : hasSession(user) 
-            ? <LogoutButtons {...props} />
-            : <LoginButtons {...props} />}
+            ? <LogoutButtons {...{user, services, dispatch}} />
+            : <LoginButtons {...{user, services, dispatch}} />}
     </Toolbar>
 </AppBar>
 );
-})
+}))
 
 const mapStateToProps = (state, ...otherProps) => {
     // console.log('header state:', JSON.stringify(state))
@@ -103,4 +107,4 @@ const mapStateToProps = (state, ...otherProps) => {
     }
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(Header));
+export default connect(mapStateToProps)(Header);

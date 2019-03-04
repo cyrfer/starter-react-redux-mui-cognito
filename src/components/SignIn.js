@@ -54,7 +54,7 @@ const SignIn = (props) => {
         onChangeUsername, valueUsername, 
     } = props;
 
-    console.log('signin props:', props)
+    // console.log('signin props:', props)
     return (
 <Paper className={classes.paper}>
     <Avatar className={classes.avatar}>
