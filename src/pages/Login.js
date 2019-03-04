@@ -5,7 +5,7 @@ import UserAuthFlow from '../components/UserAuthFlow'
 const Login = (props) => {
     return (
 <Layout>
-    <UserAuthFlow buttonText={'Sign In'} displayText={'Until SAML'} />
+    <UserAuthFlow navigateTo="/" displayText={'Until SAML'} />
 </Layout>
     )
 }

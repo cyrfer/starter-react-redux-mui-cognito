@@ -56,7 +56,7 @@ const PasswordReset = ({classes, buttonText, dialogTitle, onSubmit,
     <Avatar className={classes.avatar}>
         <LockOutlinedIcon />
     </Avatar>
-    <Typography component="h1" variant="h5">{dialogTitle}</Typography>
+    <Typography component="h1" variant="h5">{dialogTitle || 'Reset Password'}</Typography>
     <form onSubmit={onSubmit} action="#">
         <FormField inputType={'password'} fieldName={'password'} onChange={onChangePassword} value={valuePassword} label={'Password'} autoComplete="current-password" />
         <Button type="submit" onClick={()=>{}} fullWidth variant="contained" color="primary" className={classes.submit}>{buttonText}</Button>

@@ -1,3 +1,8 @@
+# Starter for a front-end using the R3MC stack
+## React/ Redux/ ReactRouter/ MaterialUI/ AWSCognito
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

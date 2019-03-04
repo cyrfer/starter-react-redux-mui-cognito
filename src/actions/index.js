@@ -6,38 +6,38 @@ const ActionTypes = {
     SIGNIN_PHONE_UPDATE: 'SIGNIN_PHONE_UPDATE',
     SIGNIN_SUBMIT: 'SIGNIN_SUBMIT',
     SIGNIN_ERROR: 'SIGNIN_ERROR',
-    SIGNIN_PASSWORD_REQUIRED: 'SIGNIN_PASSWORD_REQUIRED',
     SIGNIN_SUCCESS: 'SIGNIN_SUCCESS',
     USER_RESET_PASSWORD_SUBMIT: 'USER_RESET_PASSWORD_SUBMIT',
     USER_RESET_PASSWORD_ERROR: 'USER_RESET_PASSWORD_ERROR',
     USER_RESET_PASSWORD_SUCCESS: 'USER_RESET_PASSWORD_SUCCESS',
+    USER_LOGOUT: 'USER_LOGOUT',
 };
 
-const updateSigninPassword = data => {
+const signinUpdatePassword = data => {
     return {
         type: ActionTypes.SIGNIN_PASSWORD_UPDATE,
-        data
+        data: {password: data}
     }
 }
 
-const updateSigninUsername = data => {
+const signinUpdateUsername = data => {
     return {
         type: ActionTypes.SIGNIN_USERNAME_UPDATE,
-        data
+        data: {username: data}
     }
 }
 
-const updateSigninEmail = data => {
+const signinUpdateEmail = data => {
     return {
         type: ActionTypes.SIGNIN_EMAIL_UPDATE,
-        data
+        data: {email: data}
     }
 }
 
-const updateSigninPhone = data => {
+const signinUpdatePhone = data => {
     return {
         type: ActionTypes.SIGNIN_PHONE_UPDATE,
-        data
+        data: {phone: data}
     }
 }
 
@@ -51,13 +51,6 @@ const signinSubmit = (data) => {
 const signinError = (data) => {
     return {
         type: ActionTypes.SIGNIN_ERROR,
-        data
-    }
-}
-
-const signinPasswordRequired = (data) => {
-    return {
-        type: ActionTypes.SIGNIN_PASSWORD_REQUIRED,
         data
     }
 }
@@ -90,17 +83,23 @@ const userResetPasswordSuccess = (data) => {
     }
 }
 
+const userLogout = () => {
+    return {
+        type: ActionTypes.USER_LOGOUT
+    }
+}
+
 export {
     ActionTypes,
-    updateSigninEmail,
-    updateSigninPhone,
-    updateSigninUsername,
-    updateSigninPassword,
+    signinUpdateEmail,
+    signinUpdatePhone,
+    signinUpdateUsername,
+    signinUpdatePassword,
     signinSubmit,
     signinError,
-    signinPasswordRequired,
     signinSuccess,
     userResetPasswordSubmit,
     userResetPasswordError,
     userResetPasswordSuccess,
+    userLogout,
 };

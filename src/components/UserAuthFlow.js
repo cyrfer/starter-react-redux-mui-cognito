@@ -2,34 +2,33 @@ import React from 'react';
 import SignIn from '../components/SignIn'
 import PasswordReset from '../components/PasswordReset'
 import { connect } from 'react-redux'
+import {withRouter} from 'react-router-dom'
 
 import {
-    signinSubmit, signinError, signinSuccess, signinPasswordRequired,
+    signinSubmit, signinError, signinSuccess,
     userResetPasswordSubmit, userResetPasswordSuccess, userResetPasswordError,
-    updateSigninUsername, updateSigninPassword,
-    // updateSigninEmail, updateSigninPhone,
+    signinUpdateUsername, signinUpdatePassword,
 } from '../actions'
 
 import Cognito from '../lib/Cognito'
 import getFormData from '../lib/getFormData'
 
 
-const onSubmitPasswordReset = (dispatch, {Auth}, user) => (evt) => {
+const onChallengePasswordReset = (dispatch, {Auth}, user, history, navidateTo) => (evt) => {
     evt.preventDefault();
     const data = getFormData(evt.target);
-    console.log('password reset form data:', data);
     dispatch(userResetPasswordSubmit(data));
 
-    Auth.sendCustomChallengeAnswer(user, data.password).then(r => {
-        console.log('password reset response:', r);
-        dispatch(userResetPasswordSuccess(r, user))
+    Auth.completeNewPassword(user, data.password).then(r => {
+        dispatch(userResetPasswordSuccess(r))
+        history.push(navidateTo)
     }).catch(e => {
-        console.error('password reset error:', e);
-        dispatch(userResetPasswordError(e, user))
+        console.error('password reset error:', JSON.stringify(e));
+        dispatch(userResetPasswordError({resetPasswordError: e}))
     })
 }
 
-const onSubmitSignin = (dispatch, {Auth}) => (evt) => {
+const onSubmitSignin = (dispatch, {Auth}, history, navidateTo) => (evt) => {
     evt.preventDefault();
     const data = getFormData(evt.target);
     dispatch(signinSubmit(data))
@@ -37,77 +36,58 @@ const onSubmitSignin = (dispatch, {Auth}) => (evt) => {
     Auth.signIn({
         username: data.username,
         password: data.password,
-        // attributes: {
-        //     email: data.email,
-        //     phone: data.phone,
-        // }
     }).then(r => {
-        console.log('signIn response:', r)
-        if (r.challengeName) {
-            switch(r.challengeName) {
-                case Cognito.Challenges.NEW_PASSWORD_REQUIRED:
-                    dispatch(signinPasswordRequired(r, data))
-                    break;
-                default:
-            }
-            return;
-        }
         dispatch(signinSuccess(r))
+        history.push(navidateTo)
     }).catch(e => {
-        console.error('signIn error:', e)
+        console.error('signIn error:', JSON.stringify(e))
         dispatch(signinError(e))
     })
 }
 
 const onChangePassword = (dispatch) => (evt) => {
-    dispatch(updateSigninPassword(evt.target.value))
+    dispatch(signinUpdatePassword(evt.target.value))
 }
 
 const onChangeUsername = (dispatch) => (evt) => {
-    dispatch(updateSigninUsername(evt.target.value))
+    dispatch(signinUpdateUsername(evt.target.value))
 }
 
-// const onChangeEmail = (dispatch) => (evt) => {
-//     dispatch(updateSigninEmail(evt.target.value))
-// }
-
-// const onChangePhone = (dispatch) => (evt) => {
-//     dispatch(updateSigninPhone(evt.target.value))
-// }
-
 const UserAuthFlow = (props) => {
-    console.log('userauthflow props:', props)
     return (
-    props.authAction === Cognito.Challenges.NEW_PASSWORD_REQUIRED
+    props.challengeName === Cognito.Challenges.NEW_PASSWORD_REQUIRED
         ? <PasswordReset 
+            buttonText={'Reset Password'}
+            dialogTitle={'Reset Password'}
             valuePassword={props.valuePassword} 
             onChangePassword={props.onChangePassword}
-            onSubmit={onSubmitPasswordReset(props.dispatch, props.services, props.user)} />
+            onSubmit={onChallengePasswordReset(props.dispatch, props.services, props.user, props.history, props.navigateTo || '/')} />
         : <SignIn 
-            valueUsername={props.valueUsername}
-            valuePassword={props.valuePassword}
-            authError={props.authError}
+            valueUsername={props.valueUsername || ''}
+            valuePassword={props.valuePassword || ''}
+            signinError={props.signinError}
             onChangeUsername={onChangeUsername(props.dispatch)}
             onChangePassword={onChangePassword(props.dispatch)}
-            onSubmit={onSubmitSignin(props.dispatch, props.services)}
-            buttonText={props.buttonText}
-            dialogTitle={props.displayText} />
+            onSubmit={onSubmitSignin(props.dispatch, props.services, props.history, props.navidateTo || '/')}
+            buttonText={props.buttonText || 'Sign In'}
+            dialogTitle={props.displayText || 'Sign In'} />
     )
 }
 
 
 const mapStateToProps = (state, otherProps) => {
-    console.log('userauthflow mapstatetoprops state:', state)
     return {
         ...otherProps,
         // valuePhone: state.user.phone,
         // valueEmail: state.user.email,
         valueUsername: state.user.username,
         valuePassword: state.user.password,
-        authError: state.user.authError,
-        authAction: state.user.authAction,
+        signinError: state.user.signinError,
+        resetPasswordError: state.user.resetPasswordError,
+        challengeName: state.user.challengeName,
+        user: state.user,
         services: state.services,
     }
 }
 
-export default connect(mapStateToProps)(UserAuthFlow);
+export default withRouter(connect(mapStateToProps)(UserAuthFlow));
